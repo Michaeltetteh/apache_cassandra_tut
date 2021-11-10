@@ -1,17 +1,21 @@
 FROM ubuntu:20.04
 
-RUN apt-get update
+RUN apt-get update && \
+	apt-get install wget -y && \
+	apt-get install apt-utils -y && \
+	apt-get upgrade -y && \
+	apt-get install openjdk-8-jdk -y
 
-RUN echo "deb http://www.apache.org/dist/cassandra/debian 40x main" | tee -a /etc/apt/sources.list.d/cassandra.sources.list
+RUN apt-get install apt-transport-https gnupg2 -y
+
+RUN wget -q -O - https://www.apache.org/dist/cassandra/KEYS | apt-key add -
 
 
-RUN apt-get install -y software-properties-common && \
-	add-apt-repository ppa:openjdk-r/ppa -y
+RUN sh -c 'echo "deb http://www.apache.org/dist/cassandra/debian 311x main" > /etc/apt/sources.list.d/cassandra.list'
 
-RUN apt-get install -y curl
 
-RUN curl https://www.apache.org/dist/cassandra/KEYS | apt-key add - && \ 
-	apt-get update
 
-RUN apt-get install -y cassandra
+
+RUN apt-get update -y && \
+	apt-get install cassandra -y
 
